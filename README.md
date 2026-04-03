@@ -1,6 +1,6 @@
 # PoriskarBD – A Smart Waste Management System (Frontend)
 
-🔗 **Live Demo:** https://your-vercel-app.vercel.app
+🔗 **Live Demo:** https://poriskar-bd-frontend.vercel.app
 
 A modern, responsive frontend for a Smart Waste Management System that allows citizens to report waste issues, collectors to manage operations, and admins to monitor the entire system efficiently.
 
@@ -122,7 +122,7 @@ src/services/api.js
 
 This project is deployed on Vercel.
 
-🔗 **Live URL:** https://your-vercel-app.vercel.app
+🔗 **Live URL:** https://poriskar-bd-frontend.vercel.app
 
 
 
