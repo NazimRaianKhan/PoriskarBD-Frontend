@@ -3,8 +3,11 @@ import toast from 'react-hot-toast';
 import PageHeader from '../../components/common/PageHeader';
 import Loader from '../../components/common/Loader';
 import { deleteUser, getUsers } from '../../services/userService';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function UsersPage() {
+  const { user: currentUser } = useAuth();
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState('');
@@ -25,12 +28,16 @@ export default function UsersPage() {
     load();
   }, [role]);
 
-  const handleDelete = async (user) => {
-    const ok = window.confirm(`Delete user "${user.name}"?`);
+  const handleDelete = async (targetUser) => {
+    if (currentUser?.email === targetUser.email) {
+      return toast.error('You cannot delete your own currently logged-in account.');
+    }
+
+    const ok = window.confirm(`Delete user "${targetUser.name}"?`);
     if (!ok) return;
 
     try {
-      await deleteUser(user.id);
+      await deleteUser(targetUser.id);
       toast.success('User deleted');
       load();
     } catch (error) {
@@ -69,19 +76,29 @@ export default function UsersPage() {
             </thead>
             <tbody>
               {users.length ? (
-                users.map((user) => (
-                  <tr key={user.id} className="border-b border-secondary/10 last:border-0">
-                    <td className="py-3 pr-4 font-medium">{user.name}</td>
-                    <td className="py-3 pr-4">{user.email}</td>
-                    <td className="py-3 pr-4">{user.role}</td>
-                    <td className="py-3 pr-4">{user.zoneName || '-'}</td>
-                    <td className="py-3 pr-4">
-                      <button className="btn-accent" onClick={() => handleDelete(user)}>
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                users.map((targetUser) => {
+                  const isCurrentUser = currentUser?.email === targetUser.email;
+
+                  return (
+                    <tr key={targetUser.id} className="border-b border-secondary/10 last:border-0">
+                      <td className="py-3 pr-4 font-medium">{targetUser.name}</td>
+                      <td className="py-3 pr-4">{targetUser.email}</td>
+                      <td className="py-3 pr-4">{targetUser.role}</td>
+                      <td className="py-3 pr-4">{targetUser.zoneName || '-'}</td>
+                      <td className="py-3 pr-4">
+                        {isCurrentUser ? (
+                          <span className="rounded-2xl bg-background px-3 py-2 text-sm text-textmain/60">
+                            Current Account
+                          </span>
+                        ) : (
+                          <button className="btn-accent" onClick={() => handleDelete(targetUser)}>
+                            Delete
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
                   <td colSpan={5} className="py-8 text-center text-textmain/60">
