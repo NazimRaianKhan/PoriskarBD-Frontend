@@ -14,6 +14,7 @@ export default function AssignCollectorForm({ reportId, onAssigned, mode = 'assi
 
   const handleAssign = async () => {
     if (!collectorId) return toast.error('Select a collector');
+
     setLoading(true);
     try {
       await assignCollector(reportId, Number(collectorId));
@@ -28,21 +29,26 @@ export default function AssignCollectorForm({ reportId, onAssigned, mode = 'assi
   };
 
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+    <div className="flex min-w-[260px] flex-col gap-2 sm:min-w-[320px] sm:flex-row sm:items-center">
       <select
-        className="input max-w-xs"
+        className="input min-w-[180px] flex-1"
         value={collectorId}
         onChange={(e) => setCollectorId(e.target.value)}
       >
         <option value="">Select collector</option>
         {collectors.map((collector) => (
           <option key={collector.id} value={collector.id}>
-            {collector.name}
+            {collector.name} {collector.zoneName ? `- ${collector.zoneName}` : ''}
           </option>
         ))}
       </select>
 
-      <button className="btn-accent" onClick={handleAssign} disabled={loading}>
+      <button
+        type="button"
+        className="btn-accent whitespace-nowrap"
+        onClick={handleAssign}
+        disabled={loading}
+      >
         {loading ? 'Saving...' : mode === 'reassign' ? 'Reassign' : 'Assign'}
       </button>
     </div>

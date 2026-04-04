@@ -52,16 +52,28 @@ export default function ReportsPage() {
             }
 
             if (report.status === 'Reported' && !report.collectorId) {
-              return <AssignCollectorForm reportId={report.id} onAssigned={load} mode="assign" />;
+              return (
+                <div className="min-w-[280px]">
+                  <AssignCollectorForm
+                    reportId={report.id}
+                    onAssigned={load}
+                    mode="assign"
+                  />
+                </div>
+              );
             }
 
             if (report.status === 'Assigned') {
               return (
-                <div className="space-y-2">
+                <div className="min-w-[280px] space-y-2">
                   <p className="text-xs text-textmain/60">
                     Current: <span className="font-medium">{report.collectorName || 'Unknown'}</span>
                   </p>
-                  <AssignCollectorForm reportId={report.id} onAssigned={load} mode="reassign" />
+                  <AssignCollectorForm
+                    reportId={report.id}
+                    onAssigned={load}
+                    mode="reassign"
+                  />
                 </div>
               );
             }
